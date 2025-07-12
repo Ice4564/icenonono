@@ -6,7 +6,6 @@
   <title>สุขสันต์วันเกิด</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -47,6 +46,9 @@
       border-radius: 20px;
       cursor: pointer;
       margin-top: 2rem;
+      animation: fadeFloat 1s ease forwards;
+      animation-delay: 1.5s;
+      opacity: 0;
     }
 
     .countdown-number {
@@ -66,9 +68,12 @@
       color: #ff4081;
       margin-bottom: 1rem;
       text-shadow: 0 0 10px white, 0 0 20px #ff69b4;
+      animation: fadeFloat 1s ease forwards;
+      animation-delay: 0.3s;
+      opacity: 0;
     }
 
-    .message p {
+    #typewriter {
       font-size: 1.2rem;
       color: #c2185b;
       background: rgba(255, 255, 255, 0.8);
@@ -76,12 +81,19 @@
       border-radius: 20px;
       box-shadow: 0 0 15px #fff;
       line-height: 1.6;
+      white-space: pre-line;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeFloat 1s ease forwards;
+      animation-delay: 1.2s;
     }
 
     .kitty {
       width: 180px;
-      margin-top: 2rem;
       animation: float 4s ease-in-out infinite;
+      animation-delay: 2s;
+      opacity: 0;
+      animation: fadeFloat 1s ease forwards, float 4s ease-in-out infinite;
     }
 
     @keyframes float {
@@ -124,41 +136,50 @@
       100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
     }
 
+    @keyframes fadeFloat {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     audio { display: none; }
+
+    #screen1 h1, #screen1 p {
+      opacity: 0;
+      animation: fadeFloat 1s ease forwards;
+    }
+
+    #screen1 h1 { animation-delay: 0.3s; }
+    #screen1 p   { animation-delay: 0.9s; }
   </style>
 </head>
 <body>
 
-  <!-- วิดีโอพื้นหลัง -->
   <video muted autoplay loop>
     <source src="https://cdn.pixabay.com/video/2023/07/04/174867-843732416_large.mp4" type="video/mp4">
   </video>
 
-  <!-- เพลง -->
   <audio id="bg-music" loop>
     <source src="Desktop-2025.mp3" type="audio/mpeg" />
   </audio>
 
-  <!-- หน้าแรก -->
   <div class="screen active" id="screen1">
     <h1>🎀 กดเลย 🎉</h1>
-    <p>🎂</p>
     <button class="start-button" onclick="startCountdown()">🎂</button>
   </div>
 
-  <!-- หน้า 2: นับถอยหลัง -->
   <div class="screen" id="screen2">
     <div class="countdown-number" id="countNum">3</div>
   </div>
 
-  <!-- หน้า 3: คำอวยพร -->
   <div class="screen message" id="screen3">
-    <h1>สุขสันต์วันเกิด! 🎂</h1>
-    <p>
-      ขอให้ทุกวันของเธอเต็มไปด้วยรอยยิ้ม ความรัก และความอบอุ่น  
-      เหมือนคิตตี้น่ารักๆ ที่ลอยอยู่รอบตัวเลย 🐧🎀
-    </p>
-    <img class="kitty" src="https://pngimg.com/uploads/hello_kitty/hello_kitty_PNG70.png" alt="Hello Kitty" />
+    <h1>สุขสันต์วันเกิด 🎂</h1>
+    <p id="typewriter"></p>
   </div>
 
   <script>
@@ -168,11 +189,14 @@
     const countNum = document.getElementById('countNum');
     const music = document.getElementById("bg-music");
 
+    const messageText = `ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุข ความสำเร็จ และสุขภาพที่ดี
+ขอให้ทุกสิ่งที่หวังไว้เป็นจริง และมีแต่สิ่งดีๆ เข้ามาในชีวิตนะและได้เติบโตในวันที่พร้อม
+ไม่ว่าจะเกิดอะไรขึ้น ขอให้เชื่อในตัวเองเสมอ ว่าตัวเองเก่งและมีค่าในแบบของตัวเอง
+และขอให้ทุกวันที่ผ่านไป…เป็นอีกหนึ่งก้าวที่ทำให้ยิ้มได้เมื่อนึกย้อนกลับมา`;
     function startCountdown() {
       screen1.classList.remove('active');
       screen2.classList.add('active');
 
-      // เปิดเพลง
       music.volume = 0.4;
       music.play().catch(() => {});
 
@@ -188,8 +212,22 @@
           screen2.classList.remove('active');
           screen3.classList.add('active');
           launchHearts();
+          typeWriter(messageText, document.getElementById("typewriter"), 50);
         }
       }, 1000);
+    }
+
+    function typeWriter(text, element, delay = 50) {
+      let i = 0;
+      element.style.opacity = 1;
+      function type() {
+        if (i < text.length) {
+          element.innerHTML += text.charAt(i);
+          i++;
+          setTimeout(type, delay);
+        }
+      }
+      type();
     }
 
     function launchHearts() {
@@ -203,5 +241,6 @@
       }, 300);
     }
   </script>
+
 </body>
 </html>
