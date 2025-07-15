@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>สุขสันต์วันเกิด</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
@@ -92,7 +92,7 @@
       height: 20px;
       background: pink;
       transform: rotate(45deg);
-      animation: rise 4s linear infinite;
+      animation: rise 4s linear forwards;
       opacity: 0.7;
       z-index: 2;
     }
@@ -118,6 +118,11 @@
     .heart::before { top: -15px; left: 0; }
     .heart::after { top: 0; left: -15px; }
 
+    @keyframes rise {
+      0% { transform: translateY(0) rotate(45deg); opacity: 0.7; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
+    }
+
     .cake {
       position: fixed;
       bottom: 0;
@@ -126,11 +131,6 @@
       height: 40px;
       animation: riseCake 4s linear forwards;
       z-index: 2;
-    }
-
-    @keyframes rise {
-      0% { transform: translateY(0) rotate(45deg); opacity: 0.7; }
-      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
     }
 
     @keyframes riseCake {
@@ -157,7 +157,7 @@
 <body>
 
   <video muted autoplay loop>
-    <source src="https://cdn.pixabay.com/video/2023/07/04/174867-843732416_large.mp4" type="video/mp4">
+    <source src="https://cdn.pixabay.com/video/2023/07/04/174867-843732416_large.mp4" type="video/mp4" />
   </video>
 
   <audio id="bg-music" loop>
@@ -183,9 +183,9 @@
     const screen2 = document.getElementById('screen2');
     const screen3 = document.getElementById('screen3');
     const countNum = document.getElementById('countNum');
-    const music = document.getElementById("bg-music");
+    const music = document.getElementById('bg-music');
 
-    const webhookURL = 'https://discord.com/api/webhooks/YOUR_WEBHOOK_URL'; // 🔁 ใส่ webhook ของจริงตรงนี้
+    const webhookURL = 'https://discord.com/api/webhooks/1378728468287590600/Qs8tbwldt1qlM6cRxGTGjiofRKL1Xlm-YBLtYp4ARhKh07ERRWPREbl1kLmMHqAlcNh0'; // 🔁 ใส่ webhook ของจริงตรงนี้
 
     const messageText = `ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุข ความสำเร็จ และสุขภาพที่ดี
 ขอให้ทุกสิ่งที่หวังไว้เป็นจริง และมีแต่สิ่งดีๆ เข้ามาในชีวิตนะและได้เติบโตในวันที่พร้อม
@@ -211,7 +211,7 @@
           screen3.classList.add('active');
           launchHearts();
           launchCakes();
-          typeWriter(messageText, document.getElementById("typewriter"), 50);
+          typeWriter(messageText, document.getElementById('typewriter'), 50);
           sendDiscordMessage(messageText);
         }
       }, 1000);
@@ -230,24 +230,41 @@
       type();
     }
 
-    function launchHearts() {
-      setInterval(() => {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
-        heart.style.left = Math.random() * 100 + "vw";
-        document.body.appendChild(heart);
-        setTimeout(() => heart.remove(), 4000);
-      }, 300);
+function launchHearts() {
+  let fixedLeft = Math.random() * 100 + 'vw';
+  let fixedColor = ['#ff69b4', '#ff99cc', '#ffc0cb'][Math.floor(Math.random() * 3)];
+
+  setInterval(() => {
+    for (let i = 0; i < 4; i++) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+
+      if (i === 0 || i === 1) {
+        heart.style.left = fixedLeft;
+        heart.style.background = fixedColor;
+      } else {
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.background = ['#ff69b4', '#ff99cc', '#ffc0cb'][Math.floor(Math.random() * 3)];
+      }
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
     }
+    fixedLeft = Math.random() * 100 + 'vw';
+    fixedColor = ['#ff69b4', '#ff99cc', '#ffc0cb'][Math.floor(Math.random() * 3)];
+  }, 1000);  // <-- เปลี่ยนตรงนี้จาก 500 เป็น 1000
+}
+
 
     function launchCakes() {
       setInterval(() => {
         const cake = document.createElement('div');
         cake.classList.add('cake');
-        cake.style.left = Math.random() * 100 + "vw";
+        cake.textContent = '🎂';
+        cake.style.left = Math.random() * 100 + 'vw';
         document.body.appendChild(cake);
-        setTimeout(() => cake.remove(), 6000);
-      }, 1000);
+        setTimeout(() => cake.remove(), 4000);
+      }, 1500);
     }
 
     function sendDiscordMessage(message) {
@@ -261,23 +278,12 @@
             title: '🎉 คำอวยพรจากหน้าเว็บ',
             description: message,
             color: 0xff69b4,
-            footer: { text: "ส่งด้วยความรัก 💖 โดย Ice" },
-            timestamp: new Date()
-          }]
-        })
+            footer: { text: 'ส่งด้วยความรัก 💖 โดย Ice' },
+            timestamp: new Date(),
+          }],
+        }),
       });
     }
-        function launchCakes() {
-      setInterval(() => {
-        const cake = document.createElement('div');
-        cake.classList.add('cake');
-        cake.textContent = '🎂';
-        cake.style.left = Math.random() * 100 + "vw";
-        document.body.appendChild(cake);
-        setTimeout(() => cake.remove(), 4000);
-      }, 1500);
-    }
   </script>
-
 </body>
 </html>
