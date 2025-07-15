@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>สุขสันต์วันเกิด</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Itim&display=swap');
@@ -80,7 +80,7 @@
       box-shadow: 0 0 15px #fff;
       line-height: 1.6;
       white-space: pre-line;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
       opacity: 0;
       animation: fadeFloat 1s ease forwards;
       animation-delay: 1.2s;
@@ -92,7 +92,7 @@
       height: 20px;
       background: pink;
       transform: rotate(45deg);
-      animation: rise 4s linear forwards;
+      animation: rise 4s linear infinite;
       opacity: 0.7;
       z-index: 2;
     }
@@ -115,13 +115,9 @@
       top: 0;
       left: -10px;
     }
+
     .heart::before { top: -15px; left: 0; }
     .heart::after { top: 0; left: -15px; }
-
-    @keyframes rise {
-      0% { transform: translateY(0) rotate(45deg); opacity: 0.7; }
-      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
-    }
 
     .cake {
       position: fixed;
@@ -131,6 +127,11 @@
       height: 40px;
       animation: riseCake 4s linear forwards;
       z-index: 2;
+    }
+
+    @keyframes rise {
+      0% { transform: translateY(0) rotate(45deg); opacity: 0.7; }
+      100% { transform: translateY(-100vh) rotate(45deg); opacity: 0; }
     }
 
     @keyframes riseCake {
@@ -143,147 +144,176 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    audio { display: none; }
-
-    #screen1 h1, #screen1 p {
+    .like-box {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border-radius: 16px;
+      padding: 10px 20px;
+      margin-top: 1rem;
+      box-shadow: 0 0 15px #ff69b4;
       opacity: 0;
-      animation: fadeFloat 1s ease forwards;
+      transition: opacity 1s ease;
     }
 
-    #screen1 h1 { animation-delay: 0.3s; }
-    #screen1 p   { animation-delay: 0.9s; }
+    .like-box.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .like-button {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #ff69b4;
+      transition: transform 0.3s ease;
+    }
+
+    .like-button:hover {
+      transform: scale(1.2);
+    }
+
+    .like-count {
+      font-size: 1.2rem;
+      color: #c2185b;
+    }
+
+    audio { display: none; }
   </style>
 </head>
 <body>
 
-  <video muted autoplay loop>
-    <source src="https://cdn.pixabay.com/video/2023/07/04/174867-843732416_large.mp4" type="video/mp4" />
-  </video>
+<video muted autoplay loop>
+  <source src="https://cdn.pixabay.com/video/2023/07/04/174867-843732416_large.mp4" type="video/mp4">
+</video>
 
-  <audio id="bg-music" loop>
-    <source src="Desktop-2025.mp3" type="audio/mpeg" />
-  </audio>
+<audio id="bg-music" loop>
+  <source src="Desktop-2025.mp3" type="audio/mpeg" />
+</audio>
 
-  <div class="screen active" id="screen1">
-    <h1>🎀 กดเลย 🎉</h1>
-    <button class="start-button" onclick="startCountdown()">🎂</button>
+<div class="screen active" id="screen1">
+  <h1>🎀 กดเลย 🎉</h1>
+  <button class="start-button" onclick="startCountdown()">🎂</button>
+</div>
+
+<div class="screen" id="screen2">
+  <div class="countdown-number" id="countNum">3</div>
+</div>
+
+<div class="screen message" id="screen3">
+  <h1>สุขสันต์วันเกิด 🎂</h1>
+  <p id="typewriter"></p>
+  <div class="like-box" id="likeBox">
+    <button class="like-button" onclick="like()">
+      ❤️
+    </button>
+    <span class="like-count" id="likeCount">0</span>
   </div>
+</div>
 
-  <div class="screen" id="screen2">
-    <div class="countdown-number" id="countNum">3</div>
-  </div>
+<script>
+  const screen1 = document.getElementById('screen1');
+  const screen2 = document.getElementById('screen2');
+  const screen3 = document.getElementById('screen3');
+  const countNum = document.getElementById('countNum');
+  const music = document.getElementById("bg-music");
+  const likeBox = document.getElementById("likeBox");
+  const likeCount = document.getElementById("likeCount");
 
-  <div class="screen message" id="screen3">
-    <h1>สุขสันต์วันเกิด 🎂</h1>
-    <p id="typewriter"></p>
-  </div>
+  const webhookURL = 'https://discord.com/api/webhooks/1378728468287590600/Qs8tbwldt1qlM6cRxGTGjiofRKL1Xlm-YBLtYp4ARhKh07ERRWPREbl1kLmMHqAlcNh0'; // แก้ตรงนี้
 
-  <script>
-    const screen1 = document.getElementById('screen1');
-    const screen2 = document.getElementById('screen2');
-    const screen3 = document.getElementById('screen3');
-    const countNum = document.getElementById('countNum');
-    const music = document.getElementById('bg-music');
-
-    const webhookURL = 'https://discord.com/api/webhooks/1378728468287590600/Qs8tbwldt1qlM6cRxGTGjiofRKL1Xlm-YBLtYp4ARhKh07ERRWPREbl1kLmMHqAlcNh0'; // 🔁 ใส่ webhook ของจริงตรงนี้
-
-    const messageText = `ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุข ความสำเร็จ และสุขภาพที่ดี
+  const messageText = `ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุข ความสำเร็จ และสุขภาพที่ดี
 ขอให้ทุกสิ่งที่หวังไว้เป็นจริง และมีแต่สิ่งดีๆ เข้ามาในชีวิตนะและได้เติบโตในวันที่พร้อม
 ไม่ว่าจะเกิดอะไรขึ้น ขอให้เชื่อในตัวเองเสมอ ว่าตัวเองเก่งและมีค่าในแบบของตัวเอง
 และขอให้ทุกวันที่ผ่านไป…เป็นอีกหนึ่งก้าวที่ทำให้ยิ้มได้เมื่อนึกย้อนกลับมา`;
 
-    function startCountdown() {
-      screen1.classList.remove('active');
-      screen2.classList.add('active');
-      music.volume = 0.4;
-      music.play().catch(() => {});
+  function startCountdown() {
+    screen1.classList.remove('active');
+    screen2.classList.add('active');
+    music.volume = 0.4;
+    music.play().catch(() => {});
+    sendDiscordMessage("มีคนเริ่มเปิดหน้าวันเกิดแล้ว 🎉");
 
-      let count = 3;
-      countNum.textContent = count;
-
-      const countdownInterval = setInterval(() => {
-        count--;
-        if (count >= 1) {
-          countNum.textContent = count;
-        } else {
-          clearInterval(countdownInterval);
-          screen2.classList.remove('active');
-          screen3.classList.add('active');
-          launchHearts();
-          launchCakes();
-          typeWriter(messageText, document.getElementById('typewriter'), 50);
-          sendDiscordMessage(messageText);
-        }
-      }, 1000);
-    }
-
-    function typeWriter(text, element, delay = 50) {
-      let i = 0;
-      element.style.opacity = 1;
-      function type() {
-        if (i < text.length) {
-          element.innerHTML += text.charAt(i);
-          i++;
-          setTimeout(type, delay);
-        }
+    let count = 3;
+    countNum.textContent = count;
+    const countdownInterval = setInterval(() => {
+      count--;
+      if (count >= 1) {
+        countNum.textContent = count;
+      } else {
+        clearInterval(countdownInterval);
+        screen2.classList.remove('active');
+        screen3.classList.add('active');
+        launchHearts();
+        launchCakes();
+        typeWriter(messageText, document.getElementById("typewriter"), 50, () => {
+          likeBox.classList.add("show");
+        });
       }
-      type();
+    }, 1000);
+  }
+
+  function typeWriter(text, element, delay = 50, callback) {
+    let i = 0;
+    element.style.opacity = 1;
+    function type() {
+      if (i < text.length) {
+        element.innerHTML += text.charAt(i);
+        i++;
+        setTimeout(type, delay);
+      } else if (callback) {
+        callback();
+      }
     }
+    type();
+  }
 
-function launchHearts() {
-  let fixedLeft = Math.random() * 100 + 'vw';
-  let fixedColor = ['#ff69b4', '#ff99cc', '#ffc0cb'][Math.floor(Math.random() * 3)];
-
-  setInterval(() => {
-    for (let i = 0; i < 4; i++) {
+  function launchHearts() {
+    setInterval(() => {
       const heart = document.createElement('div');
       heart.classList.add('heart');
-
-      if (i === 0 || i === 1) {
-        heart.style.left = fixedLeft;
-        heart.style.background = fixedColor;
-      } else {
-        heart.style.left = Math.random() * 100 + 'vw';
-        heart.style.background = ['#ff69b4', '#ff99cc', '#ffc0cb'][Math.floor(Math.random() * 3)];
-      }
-
+      heart.style.left = Math.random() * 100 + "vw";
       document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 4000);
-    }
-    fixedLeft = Math.random() * 100 + 'vw';
-    fixedColor = ['#ff69b4', '#ff99cc', '#ffc0cb'][Math.floor(Math.random() * 3)];
-  }, 1000);  // <-- เปลี่ยนตรงนี้จาก 500 เป็น 1000
-}
+    }, 300);
+  }
 
+  function launchCakes() {
+    setInterval(() => {
+      const cake = document.createElement('div');
+      cake.classList.add('cake');
+      cake.textContent = '🎂';
+      cake.style.left = Math.random() * 100 + "vw";
+      document.body.appendChild(cake);
+      setTimeout(() => cake.remove(), 4000);
+    }, 1500);
+  }
 
-    function launchCakes() {
-      setInterval(() => {
-        const cake = document.createElement('div');
-        cake.classList.add('cake');
-        cake.textContent = '🎂';
-        cake.style.left = Math.random() * 100 + 'vw';
-        document.body.appendChild(cake);
-        setTimeout(() => cake.remove(), 4000);
-      }, 1500);
-    }
+  function like() {
+    let count = parseInt(likeCount.textContent);
+    likeCount.textContent = count + 1;
+    sendDiscordMessage("❤️ มีคนกดหัวใจในหน้าวันเกิดแล้ว!");
+    likeBox.style.transition = "opacity 0.5s ease";
+    likeBox.style.opacity = 0;
+    setTimeout(() => {
+      likeBox.style.display = "none";
+    }, 500);
+  }
 
-    function sendDiscordMessage(message) {
-      fetch(webhookURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: '🎂 ระบบสุขสันต์วันเกิด',
-          avatar_url: 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
-          embeds: [{
-            title: '🎉 คำอวยพรจากหน้าเว็บ',
-            description: message,
-            color: 0xff69b4,
-            footer: { text: 'ส่งด้วยความรัก 💖 โดย Ice' },
-            timestamp: new Date(),
-          }],
-        }),
-      });
-    }
-  </script>
+  function sendDiscordMessage(message) {
+    fetch(webhookURL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: '🎂 ระบบสุขสันต์วันเกิด',
+        avatar_url: 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
+        content: message
+      })
+    });
+  }
+</script>
 </body>
 </html>
