@@ -182,6 +182,11 @@
     }
 
     audio { display: none; }
+    @keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
   </style>
 </head>
 <body>
@@ -215,6 +220,8 @@
 </div>
 
 <script>
+  const namelist = ["จันเจ้า" , "เพนกวิน" ];
+  const randomName = namelist[Math.floor(Math.random()* namelist.length) ];
   const screen1 = document.getElementById('screen1');
   const screen2 = document.getElementById('screen2');
   const screen3 = document.getElementById('screen3');
@@ -295,7 +302,7 @@
   function like() {
     let count = parseInt(likeCount.textContent);
     likeCount.textContent = count + 1;
-    sendDiscordMessage("❤️ มีคนกดหัวใจในหน้าวันเกิดแล้ว!");
+    sendDiscordMessage("❤️มีคนชอบ");
     likeBox.style.transition = "opacity 0.5s ease";
     likeBox.style.opacity = 0;
     setTimeout(() => {
@@ -303,17 +310,17 @@
     }, 500);
   }
 
-  function sendDiscordMessage(message) {
-    fetch(webhookURL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: '🎂 ระบบสุขสันต์วันเกิด',
-        avatar_url: 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
-        content: message
-      })
-    });
-  }
+function sendDiscordMessage(message) {
+  fetch(webhookURL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: `🎂 ${randomName}`,
+      avatar_url: 'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
+      content: message
+    })
+  });
+}
 </script>
 </body>
 </html>
