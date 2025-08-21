@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Birthday 🎉</title>
+<link href="https://fonts.googleapis.com/css2?family=Kanit&family=Itim&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Kanit',sans-serif;}
+body{overflow:hidden;background:linear-gradient(to bottom,#ffe6f0,#ffc1e3);}
+video{position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:-1;filter:brightness(0.8);}
+.screen{display:none;flex-direction:column;justify-content:center;align-items:center;height:100vh;text-align:center;padding:2rem;}
+.active{display:flex;}
+.start-button{font-size:2rem;padding:1rem 2rem;background:linear-gradient(45deg,#ff69b4,#ff4081);color:white;border:none;border-radius:30px;cursor:pointer;margin-top:2rem;transition: transform 0.3s ease, box-shadow 0.3s ease;}
+.start-button:hover{transform:scale(1.1);box-shadow:0 0 25px #ff69b4;}
+.countdown-number{font-size:8rem;color:#ff4081;text-shadow:0 0 25px white,0 0 50px #ff69b4;animation:zoom 1s ease infinite alternate;}
+@keyframes zoom{from{transform:scale(1);}to{transform:scale(1.15);}}
+.message h1{font-size:3rem;color:#ff4081;margin-bottom:1rem;text-shadow:0 0 15px white,0 0 30px #ff4081;text-align:center;animation:glow 2s ease-in-out infinite alternate;}
+@keyframes glow{from{text-shadow:0 0 15px white,0 0 30px #ff4081;}to{text-shadow:0 0 30px #fff,0 0 60px #ff4081;}}
+#typewriter{font-size:1.3rem;color:#c2185b;background:rgba(255,255,255,0.2);padding:1.5rem;border-radius:20px;box-shadow:0 0 30px rgba(255,64,129,0.5);line-height:1.6;white-space:pre-line;margin-bottom:2rem;opacity:0;transition:opacity 0.5s;text-align:center;}
+#typewriter.show{opacity:1;}
+.heart,.cake,.sparkle,.snowflake{position:fixed;z-index:2;pointer-events:none;}
+.heart{width:20px;height:20px;background:pink;transform:rotate(45deg);opacity:0.8;box-shadow:0 0 15px #ff69b4;}
+.heart::before,.heart::after{content:"";position:absolute;width:20px;height:20px;background:pink;border-radius:50%;}
+.heart::before{top:-15px;left:0;} .heart::after{top:0;left:-15px;}
+.cake{font-size:2rem;bottom:0;filter:drop-shadow(0 0 15px #ff4081);}
+.like-box{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:1rem;opacity:0;transition:opacity 0.5s;}
+.like-box.show{opacity:1;}
+.like-button{font-size:1.5rem;background:none;border:none;cursor:pointer;color:#ff69b4;transition:transform 0.3s;}
+.like-button:hover{transform:scale(1.2);}
+@keyframes rise{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(-100vh) rotate(360deg);opacity:0;}}
+@keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(360deg);opacity:0;}}
+@keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
+.fade-out{animation:fadeOut 1s forwards;}
+#dark-screen{position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(180deg,#111,#001122);overflow:hidden;z-index:9999;display:none;}
+</style>
+</head>
+<body>
+
+<video muted autoplay loop>
+<source src="https://cdn.pixabay.com/video/2023/07/04/174867-843732416_large.mp4" type="video/mp4">
+</video>
+
+<audio id="bg-music" loop>
+<source src="Desktop-2025.mp3" type="audio/mpeg">
+</audio>
+
+<div class="screen active" id="screen1">
+  <h1>🎀 กดเลย 🎉</h1>
+  <button class="start-button" onclick="startCountdown()">🎂</button>
+</div>
+
+<div class="screen" id="screen2">
+  <div class="countdown-number" id="countNum">3</div>
+</div>
+
+<div class="screen message" id="screen3">
+  <h1>สุขสันต์วันเกิด 🎂</h1>
+  <p id="typewriter"></p>
+  <div class="like-box" id="likeBox">
+    <button class="like-button" onclick="like()">❤️</button>
+  </div>
+</div>
+
+<div id="dark-screen"></div>
+
+<script>
+const screen1=document.getElementById("screen1");
+const screen2=document.getElementById("screen2");
+const screen3=document.getElementById("screen3");
+const countNum=document.getElementById("countNum");
+const music=document.getElementById("bg-music");
+const likeBox=document.getElementById("likeBox");
+const darkScreen=document.getElementById("dark-screen");
+const namelist=["จันเจ้า","เพนกวิน"];
+const randomName=namelist[Math.floor(Math.random()*namelist.length)];
+const webhookURL="https://discord.com/api/webhooks/1378728468287590600/Qs8tbwldt1qlM6cRxGTGjiofRKL1Xlm-YBLtYp4ARhKh07ERRWPREbl1kLmMHqAlcNh0";
+const messageText=`ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุขความสำเร็จและสุขภาพที่ดี
+ขอให้ทุกสิ่งที่หวังไว้เป็นจริง และมีแต่สิ่งดีๆ เข้ามาในชีวิตและได้เติบโตในวันที่พร้อม
+ไม่ว่าจะเกิดอะไรขึ้น ขอให้เชื่อมั่นในตัวเอง ว่าตัวเองเก่งและมีค่าในแบบของตัวเอง
+และขอให้ทุกวันที่ผ่านไป…เป็นอีกหนึ่งก้าวที่ทำให้ยิ้มได้เมื่อนึกย้อนกลับมา`;
+
+let birthdayIntervals=[];
+
+function startCountdown(){
+  screen1.classList.remove("active");
+  screen2.classList.add("active");
+  music.volume=0.4;
+  music.play().catch(()=>{});
+  sendDiscordMessage("มีคนเริ่มเปิดหน้าวันเกิดแล้ว 🎉");
+  let count=3; countNum.textContent=count;
+  const interval=setInterval(()=>{
+    count--;
+    if(count>=1){countNum.textContent=count;}
+    else{
+      clearInterval(interval);
+      screen2.classList.remove("active");
+      screen3.classList.add("active");
+      typeWriter(messageText,document.getElementById("typewriter"),50,()=>{
+        likeBox.classList.add("show");
+      });
+      launchHearts(); launchCakes(); launchSparkles(); launchSnowflakes();
+    }
+  },1000);
+}
+
+function typeWriter(text,el,delay=50,callback){
+  el.innerHTML=""; el.classList.add("show");
+  let i=0;
+  function type(){if(i<text.length){el.innerHTML+=text.charAt(i);i++;setTimeout(type,delay);} else if(callback){callback();}}
+  type();
+}
+
+function launchHearts(){birthdayIntervals.push(setInterval(()=>{const h=document.createElement("div");h.classList.add("heart");h.style.left=Math.random()*100+"vw";h.style.animation=`rise ${3+Math.random()*2}s linear forwards`;document.body.appendChild(h);setTimeout(()=>h.remove(),6000);},400));}
+function launchCakes(){birthdayIntervals.push(setInterval(()=>{const c=document.createElement("div");c.classList.add("cake");c.textContent="🎂";c.style.left=Math.random()*100+"vw";c.style.animation=`rise ${4+Math.random()*2}s linear forwards`;document.body.appendChild(c);setTimeout(()=>c.remove(),6000);},1500));}
+function launchSparkles(){birthdayIntervals.push(setInterval(()=>{const s=document.createElement("div");s.classList.add("sparkle");s.style.left=Math.random()*100+"vw";s.style.top=Math.random()*100+"vh";s.style.width="5px";s.style.height="5px";s.style.background="rgba(255,255,255,0.8)";s.style.borderRadius="50%";document.body.appendChild(s);setTimeout(()=>s.remove(),4000);},300));}
+function launchSnowflakes(){birthdayIntervals.push(setInterval(()=>{const sn=document.createElement("div");sn.classList.add("snowflake");sn.style.left=Math.random()*100+"vw";sn.style.top="-10px";sn.style.width="6px";sn.style.height="6px";sn.style.background="white";sn.style.borderRadius="50%";sn.style.opacity=0.6;sn.style.animation=`fall ${5+Math.random()*5}s linear forwards`;document.body.appendChild(sn);setTimeout(()=>sn.remove(),7000);},500));}
+
+function like(){
+  likeBox.style.display="none";
+  sendDiscordMessage("❤️ มีคนชอบ 🎉");
+  // หยุดทุก Interval หน้า Birthday
+  birthdayIntervals.forEach(i=>clearInterval(i));
+  birthdayIntervals=[];
+  fadeToDark();
+}
+
+function fadeToDark(){
+  screen3.classList.add("fade-out");
+  setTimeout(()=>{
+    screen3.style.display="none";
+    darkScreen.style.display="block";
+    launchDarkScreenParticles();
+  },1000);
+}
+
+function launchDarkScreenParticles(){
+  // หัวใจบน Dark Screen
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.classList.add("heart");
+    h.style.left=Math.random()*100+"vw";
+    h.style.top=Math.random()*80+"vh";
+    h.style.width="18px"; h.style.height="18px";
+    h.style.opacity=0.7; h.style.background="pink"; h.style.transform="rotate(45deg)";
+    h.style.animation=`rise ${4+Math.random()*2}s linear forwards`;
+    darkScreen.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },500);
+
+  // Sparkles
+  setInterval(()=>{
+    const s=document.createElement("div");
+    s.classList.add("sparkle");
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    s.style.width="6px"; s.style.height="6px";
+    s.style.background="rgba(255,255,255,0.7)";
+    s.style.borderRadius="50%";
+    darkScreen.appendChild(s);
+    setTimeout(()=>s.remove(),4000);
+  },400);
+
+  // Snowflakes
+  setInterval(()=>{
+    const sn=document.createElement("div");
+    sn.classList.add("snowflake");
+    sn.style.left=Math.random()*100+"vw";
+    sn.style.top="-10px";
+    sn.style.width="6px"; sn.style.height="6px";
+    sn.style.background="white";
+    sn.style.borderRadius="50%";
+    sn.style.opacity=0.6;
+    sn.style.animation=`fall ${6+Math.random()*4}s linear forwards`;
+    darkScreen.appendChild(sn);
+    setTimeout(()=>sn.remove(),7000);
+  },600);
+}
+
+function sendDiscordMessage(msg){
+  fetch(webhookURL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({username:`🎂 ${randomName}`,avatar_url:"https://cdn-icons-png.flaticon.com/512/3595/3595455.png",content:msg})
+  });
+}
+</script>
+</body>
+</html>
