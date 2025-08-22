@@ -15,24 +15,55 @@ video{position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-in
 .start-button:hover{transform:scale(1.1);box-shadow:0 0 25px #ff69b4;}
 .countdown-number{font-size:8rem;color:#ff4081;text-shadow:0 0 25px white,0 0 50px #ff69b4;animation:zoom 1s ease infinite alternate;}
 @keyframes zoom{from{transform:scale(1);}to{transform:scale(1.15);}}
+
+/* Message Screen */
 .message h1{font-size:3rem;color:#ff4081;margin-bottom:1rem;text-shadow:0 0 15px white,0 0 30px #ff4081;text-align:center;animation:glow 2s ease-in-out infinite alternate;}
 @keyframes glow{from{text-shadow:0 0 15px white,0 0 30px #ff4081;}to{text-shadow:0 0 30px #fff,0 0 60px #ff4081;}}
 #typewriter{font-size:1.3rem;color:#c2185b;background:rgba(255,255,255,0.2);padding:1.5rem;border-radius:20px;box-shadow:0 0 30px rgba(255,64,129,0.5);line-height:1.6;white-space:pre-line;margin-bottom:2rem;opacity:0;transition:opacity 0.5s;text-align:center;}
 #typewriter.show{opacity:1;}
+.like-box{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:1rem;opacity:0;transition:opacity 0.5s;}
+.like-box.show{opacity:1;}
+.like-button{font-size:1.5rem;background:none;border:none;cursor:pointer;color:#ff69b4;transition:transform 0.3s;}
+.like-button:hover{transform:scale(1.2);}
+
+/* Heart/Cake/Sparkle/Snowflake */
 .heart,.cake,.sparkle,.snowflake{position:fixed;z-index:2;pointer-events:none;}
 .heart{width:20px;height:20px;background:pink;transform:rotate(45deg);opacity:0.8;box-shadow:0 0 15px #ff69b4;}
 .heart::before,.heart::after{content:"";position:absolute;width:20px;height:20px;background:pink;border-radius:50%;}
 .heart::before{top:-15px;left:0;} .heart::after{top:0;left:-15px;}
 .cake{font-size:2rem;bottom:0;filter:drop-shadow(0 0 15px #ff4081);}
-.like-box{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:1rem;opacity:0;transition:opacity 0.5s;}
-.like-box.show{opacity:1;}
-.like-button{font-size:1.5rem;background:none;border:none;cursor:pointer;color:#ff69b4;transition:transform 0.3s;}
-.like-button:hover{transform:scale(1.2);}
 @keyframes rise{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(-100vh) rotate(360deg);opacity:0;}}
 @keyframes fall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(360deg);opacity:0;}}
 @keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
 .fade-out{animation:fadeOut 1s forwards;}
-#dark-screen{position:fixed;top:0;left:0;width:100vw;height:100vh;background:linear-gradient(180deg,#111,#001122);overflow:hidden;z-index:9999;display:none;}
+
+/* Dark Screen Galaxy */
+#dark-screen {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: radial-gradient(circle at 20% 30%, #2b003b, #4b0082, #1e3c72, #000011);
+  overflow: hidden;
+  z-index: 9999;
+  display: none;
+}
+.galaxy-text {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  color: #ff69b4;
+  text-shadow: 0 0 25px #ff69b4, 0 0 50px #ffffff, 0 0 80px #c2185b;
+  animation: floatText 5s ease-in-out infinite;
+  text-align: center;
+}
+@keyframes floatText {
+  0% { transform: translate(-50%, -50%) translateY(0px);}
+  50% { transform: translate(-50%, -50%) translateY(-40px);}
+  100% { transform: translate(-50%, -50%) translateY(0px);}
+}
+.particle { position:absolute; pointer-events:none; border-radius:50%; }
+@keyframes floatStar { 0% {opacity:0.1;} 50% {opacity:1;} 100% {opacity:0.1;} }
 </style>
 </head>
 <body>
@@ -45,15 +76,18 @@ video{position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-in
 <source src="Desktop-2025.mp3" type="audio/mpeg">
 </audio>
 
+<!-- หน้าเริ่ม -->
 <div class="screen active" id="screen1">
   <h1>🎀 กดเลย 🎉</h1>
   <button class="start-button" onclick="startCountdown()">🎂</button>
 </div>
 
+<!-- Countdown -->
 <div class="screen" id="screen2">
   <div class="countdown-number" id="countNum">3</div>
 </div>
 
+<!-- ข้อความวันเกิด -->
 <div class="screen message" id="screen3">
   <h1>สุขสันต์วันเกิด 🎂</h1>
   <p id="typewriter"></p>
@@ -62,7 +96,10 @@ video{position:fixed;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-in
   </div>
 </div>
 
-<div id="dark-screen"></div>
+<!-- Dark Screen Galaxy -->
+<div id="dark-screen">
+  <div class="galaxy-text">ขอบคุณที่เข้ามานะครับ😊</div>
+</div>
 
 <script>
 const screen1=document.getElementById("screen1");
@@ -96,9 +133,7 @@ function startCountdown(){
       clearInterval(interval);
       screen2.classList.remove("active");
       screen3.classList.add("active");
-      typeWriter(messageText,document.getElementById("typewriter"),50,()=>{
-        likeBox.classList.add("show");
-      });
+      typeWriter(messageText,document.getElementById("typewriter"),50,()=>{ likeBox.classList.add("show"); });
       launchHearts(); launchCakes(); launchSparkles(); launchSnowflakes();
     }
   },1000);
@@ -119,7 +154,6 @@ function launchSnowflakes(){birthdayIntervals.push(setInterval(()=>{const sn=doc
 function like(){
   likeBox.style.display="none";
   sendDiscordMessage("❤️ มีคนชอบ 🎉");
-  // หยุดทุก Interval หน้า Birthday
   birthdayIntervals.forEach(i=>clearInterval(i));
   birthdayIntervals=[];
   fadeToDark();
@@ -127,54 +161,55 @@ function like(){
 
 function fadeToDark(){
   screen3.classList.add("fade-out");
-  setTimeout(()=>{
-    screen3.style.display="none";
-    darkScreen.style.display="block";
-    launchDarkScreenParticles();
-  },1000);
+  setTimeout(()=>{ screen3.style.display="none"; launchGalaxyScreen(); },1000);
 }
 
-function launchDarkScreenParticles(){
-  // หัวใจบน Dark Screen
-  setInterval(()=>{
-    const h=document.createElement("div");
-    h.classList.add("heart");
-    h.style.left=Math.random()*100+"vw";
-    h.style.top=Math.random()*80+"vh";
-    h.style.width="18px"; h.style.height="18px";
-    h.style.opacity=0.7; h.style.background="pink"; h.style.transform="rotate(45deg)";
-    h.style.animation=`rise ${4+Math.random()*2}s linear forwards`;
-    darkScreen.appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-  },500);
+function launchGalaxyScreen(){
+  darkScreen.style.display="block";
 
-  // Sparkles
-  setInterval(()=>{
-    const s=document.createElement("div");
-    s.classList.add("sparkle");
-    s.style.left=Math.random()*100+"vw";
-    s.style.top=Math.random()*100+"vh";
-    s.style.width="6px"; s.style.height="6px";
-    s.style.background="rgba(255,255,255,0.7)";
-    s.style.borderRadius="50%";
-    darkScreen.appendChild(s);
-    setTimeout(()=>s.remove(),4000);
-  },400);
+  // ดาวหลายชั้น + สีสัน Galaxy
+  for(let i=0;i<3;i++){
+    setInterval(()=>{
+      const star = document.createElement("div");
+      star.classList.add("particle");
+      const size = Math.random()*2+1 + i;
+      star.style.width = size + "px";
+      star.style.height = size + "px";
+      const colors = ["#ffffff","#ffccff","#ccccff","#99ccff"];
+      star.style.background = colors[Math.floor(Math.random()*colors.length)];
+      star.style.left = Math.random()*100 + "vw";
+      star.style.top = Math.random()*100 + "vh";
+      star.style.borderRadius = "50%";
+      star.style.animation = `floatStar ${10+i*3+Math.random()*5}s infinite alternate`;
+      darkScreen.appendChild(star);
+      setTimeout(()=>star.remove(),20000);
+    }, 400-(i*50));
+  }
 
-  // Snowflakes
+  // เค้ก & หัวใจ ลอยช้า + หมุน
   setInterval(()=>{
-    const sn=document.createElement("div");
-    sn.classList.add("snowflake");
-    sn.style.left=Math.random()*100+"vw";
-    sn.style.top="-10px";
-    sn.style.width="6px"; sn.style.height="6px";
-    sn.style.background="white";
-    sn.style.borderRadius="50%";
-    sn.style.opacity=0.6;
-    sn.style.animation=`fall ${6+Math.random()*4}s linear forwards`;
-    darkScreen.appendChild(sn);
-    setTimeout(()=>sn.remove(),7000);
-  },600);
+    const items = ["🎂","❤️"];
+    const item = document.createElement("div");
+    item.classList.add("cake");
+    item.textContent = items[Math.floor(Math.random()*items.length)];
+    item.style.left = Math.random()*80 + 10 + "vw";
+    item.style.top = "100vh";
+    const size = 30+Math.random()*25;
+    item.style.fontSize = size + "px";
+    let leftShift = (Math.random()*50-25);
+    let animTime = 12+Math.random()*5;
+    let start = null;
+    function animate(timestamp){
+      if(!start) start=timestamp;
+      let progress = (timestamp-start)/1000;
+      if(progress<animTime){
+        item.style.transform = `translate(${leftShift*progress/animTime}px,-${progress*80}vh) rotate(${progress*360/animTime}deg)`;
+        requestAnimationFrame(animate);
+      } else item.remove();
+    }
+    requestAnimationFrame(animate);
+    darkScreen.appendChild(item);
+  }, 1000);
 }
 
 function sendDiscordMessage(msg){
